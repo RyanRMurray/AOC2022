@@ -147,4 +147,11 @@ mod tests {
     fn validate_add(#[case] expected: Pt<4>, #[case] a: Pt<4>, #[case] b: Pt<4>) {
         assert_eq!(expected, a.add(&b))
     }
+
+    #[rstest]
+    #[case(Pt([100,200,300]), Pt([1,2,3]), 100)]
+    #[case(Pt([-100,-200,-300]), Pt([1,2,3]), -100)]
+    fn validate_mul(#[case] expected: Pt<3>, #[case] a: Pt<3>, #[case] b: isize) {
+        assert_eq!(expected, a.mul(b))
+    }
 }
