@@ -57,6 +57,11 @@ impl<T: Copy, const DIMS: usize> Grid<T, DIMS> {
         *self.grid.get(pt).unwrap_or(&self.default_val)
     }
 
+    /// Change the default value
+    pub fn set_default(&mut self, new_default: T) {
+        self.default_val = new_default;
+    }
+
     /// merge one grid into this one, using the specified merge_function
     pub fn merge(&mut self, other: Grid<T, DIMS>, merge_function: fn(&T, &T) -> T) {
         other.grid.into_iter().for_each(|(k, v)| {

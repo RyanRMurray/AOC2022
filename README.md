@@ -44,7 +44,10 @@ Currently implements:
 ### Grid
 A grid with an arbitrary number of dimensions - using the above `Pt` as a key in a Hashmap of arbitrary items. Includes some helpful features:
  - Stores copies of `Pt`'s neighbour offsets so we don't have to recalculate them each time.
- - Generator functions using a vector of `Pt`-value pairs, or default values
+ - Generator functions:
+   - `Default`, which creates an empty `Grid` of the specified dimensions
+   - `From` a vector of `Pt`/values
+   - `From` a vector of vectors/values. NOTE! We assume the vectors are of the same dimension as the `Grid`!
  - Default value that is returned if a point does not exist in a grid - helpful when we want to represent infinite space
  - `merge` for combining `Grid`s
  - `transform` for applying a transformation to all `Pt`s in a `Grid` (e.g. translation, multiplication, and God forbid, rotation.)
