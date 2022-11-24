@@ -37,10 +37,11 @@ impl<T: Default, const DIMS: usize> From<Vec<(Pt<DIMS>, T)>> for Grid<T, DIMS> {
 
 #[allow(dead_code)]
 impl<T, const DIMS: usize> Grid<T, DIMS> {
-    /// merge one grid into this one, overwriting any existing values
-    fn merge(&mut self, other: Grid<T, DIMS>) {
+    /// merge one grid into this one, using the specified merge_function
+    fn merge(&mut self, other: Grid<T, DIMS>, merge_function: fn(&T, &T) -> T) {
         other.grid.into_iter().for_each(|(k, v)| {
-            self.grid.insert(k, v);
+            let new_val = merge_function(self.grid.get(&k).unwrap_or(&self.default_val), &v);
+            self.grid.insert(k, new_val);
         });
     }
 
@@ -91,7 +92,7 @@ mod tests {
             (Pt([0, 0]), 60),
         ]);
 
-        target.merge(to_merge);
+        target.merge(to_merge, |_, x| *x);
 
         assert_eq!(expected, target);
     }
