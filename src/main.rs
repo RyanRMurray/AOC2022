@@ -37,7 +37,12 @@ fn main() {
 
     match args.mode {
         RunMode::Example => run_example(),
-        RunMode::All => todo!(),
+        RunMode::All => {
+            let result = run_all();
+            if let Err(err) = result {
+                println!("Failed to run solutions. Reason: {}", err)
+            }
+        }
         RunMode::Single => {
             let result = run_single(args.day.unwrap(), args.input);
 
@@ -74,7 +79,7 @@ fn load_from_file(file_path: &Path) -> Result<String> {
 }
 
 /// run a single specified day's solution
-fn run_single(day: usize, input_path: Option<String>) -> Result<()> {
+fn run_single(day: usize, input_path: Option<String>) -> Result<f32> {
     if day < 1 || day > SOLUTIONS.len() {
         return Err(anyhow!("Day '{}' is invalid or not yet solved", day));
     }
@@ -84,7 +89,19 @@ fn run_single(day: usize, input_path: Option<String>) -> Result<()> {
 
     let input = load_from_file(file_path)?;
 
-    SOLUTIONS[day - 1](&input)?;
+    SOLUTIONS[day - 1](&input)
+}
+
+/// run all solutions
+fn run_all() -> Result<()> {
+    let mut time_total = 0.0;
+
+    for i in 0..SOLUTIONS.len() {
+        time_total += run_single(i + 1, None)?;
+    }
+
+    println!("Overall runtime: {}ms", time_total);
+
     Ok(())
 }
 
