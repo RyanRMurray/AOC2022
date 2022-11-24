@@ -43,6 +43,18 @@ impl<const DIMS: usize> Pt<DIMS> {
         }
         Pt(res)
     }
+
+    pub fn mul(&self, multiply_by: isize) -> Self {
+        let mut res = [0; DIMS];
+        for (i, x) in self.0.iter().enumerate() {
+            res[i] = multiply_by * x
+        }
+        Pt(res)
+    }
+
+    pub fn mag(&self) -> isize {
+        self.0.iter().map(|v| v.abs()).sum()
+    }
 }
 
 #[cfg(test)]
