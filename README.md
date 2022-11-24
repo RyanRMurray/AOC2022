@@ -9,16 +9,18 @@ You can run this project by calling
 
 ```bash
 cargo build
-./target/debug/aoc2022.exe [day number] [input file path]
+./target/debug/aoc2022.exe -d [day number]  -i [input file path]
 ```
 
 or
 
 ```bash
-cargo run [day number] [input file path]
+cargo run -- -d [day number] -i [input file path]
 ```
 
 By default, `./inputs/input_{day}.txt` will be used as the input file path. For example, day 01 will use `./inputs/input_01.txt`
+
+For more uses, run `cargo run -- --help`.
 
 ## Contribution
 

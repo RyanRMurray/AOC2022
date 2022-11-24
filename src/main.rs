@@ -25,9 +25,12 @@ enum RunMode {
 #[command(author, version, about, long_about = None)]
 struct Args {
     #[arg(long, short, default_value = "example")]
+    /// Example: run an example. Single: run a single day's solution. All: Run all solutions sequentially.
     mode: RunMode,
+    /// Specify which day's solution to run - only used when --mode is single.
     #[arg(long, short, required_if_eq("mode", "single"))]
     day: Option<usize>,
+    /// Specify the filepath to the day's input - only used when --mode is single
     #[arg(long, short)]
     input: Option<String>,
 }
