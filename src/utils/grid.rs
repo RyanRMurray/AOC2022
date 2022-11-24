@@ -36,6 +36,20 @@ impl<T: Default + Copy, const DIMS: usize> From<Vec<(Pt<DIMS>, T)>> for Grid<T, 
     }
 }
 
+impl<T: Default + Copy, const DIMS: usize> From<Vec<(Vec<isize>, T)>> for Grid<T, DIMS> {
+    fn from(v: Vec<(Vec<isize>, T)>) -> Self {
+        Self {
+            offsets: Pt::<DIMS>::neighbour_offsets(),
+            card_offsets: Pt::<DIMS>::card_offsets(),
+            default_val: T::default(),
+            grid: v
+                .into_iter()
+                .map(|(k, v)| (Pt(k.try_into().unwrap()), v))
+                .collect(),
+        }
+    }
+}
+
 #[allow(dead_code)]
 impl<T: Copy, const DIMS: usize> Grid<T, DIMS> {
     /// get a value at the specified coordinates or the default
