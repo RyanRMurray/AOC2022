@@ -1,2 +1,2 @@
 pub mod load_input;
-pub mod types;
+pub mod solver_types;

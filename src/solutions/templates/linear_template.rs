@@ -1,4 +1,4 @@
-use crate::utils::types::SolutionLinear;
+use crate::utils::solver_types::SolutionLinear;
 use anyhow::Result;
 
 // Example:
@@ -30,7 +30,7 @@ impl SolutionLinear<Vec<usize>, usize, usize> for ExampleSolution {
 #[cfg(test)]
 mod tests {
     use super::ExampleSolution;
-    use crate::utils::types::SolutionLinear;
+    use crate::utils::solver_types::SolutionLinear;
     use rstest::rstest;
 
     #[rstest]

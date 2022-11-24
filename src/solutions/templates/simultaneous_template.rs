@@ -1,4 +1,4 @@
-use crate::utils::types::SolutionSimultaneous;
+use crate::utils::solver_types::SolutionSimultaneous;
 use anyhow::anyhow;
 use itertools::Itertools;
 
@@ -35,7 +35,7 @@ impl SolutionSimultaneous<Vec<usize>, usize, usize> for ExampleSolution {
 #[cfg(test)]
 mod tests {
     use super::ExampleSolution;
-    use crate::utils::types::SolutionSimultaneous;
+    use crate::utils::solver_types::SolutionSimultaneous;
     use rstest::rstest;
 
     #[rstest]
