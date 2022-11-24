@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use itertools::Itertools;
 
 #[derive(Hash, PartialEq, Eq, PartialOrd, Debug, Clone, Copy)]
@@ -12,14 +14,26 @@ impl<const DIMS: usize> Default for Pt<DIMS> {
 #[allow(dead_code)]
 impl<const DIMS: usize> Pt<DIMS> {
     /// get all the offsets required to get every neighbour to a position
-    pub fn neighbour_offsets() -> Vec<Pt<DIMS>> {
+    pub fn neighbour_offsets() -> HashSet<Pt<DIMS>> {
         vec![[-1, 0, 1]; DIMS]
             .into_iter()
             .multi_cartesian_product()
             .map(|vec| vec.try_into().unwrap())
             .filter(|arr| arr != &[0; DIMS])
             .map(Pt)
-            .collect_vec()
+            .collect()
+    }
+
+    /// get all the offsets required to get every cardinal (non-diagonal) neighbour to a position
+    pub fn card_offsets() -> HashSet<Pt<DIMS>> {
+        let mut pts = vec![[0; DIMS]; DIMS * 2];
+
+        for i in 0..DIMS {
+            pts[i][i] = 1;
+            pts[i + DIMS][i] = -1;
+        }
+
+        pts.into_iter().map(Pt).collect()
     }
 
     pub fn add(&self, oth: &Pt<DIMS>) -> Self {
@@ -33,12 +47,14 @@ impl<const DIMS: usize> Pt<DIMS> {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::HashSet;
+
     use super::Pt;
     use rstest::rstest;
 
     #[test]
     fn validate_offsets() {
-        let expected_2d: Vec<Pt<2>> = vec![
+        let expected_2d: HashSet<Pt<2>> = vec![
             [-1, -1],
             [-1, 0],
             [-1, 1],
@@ -54,7 +70,7 @@ mod tests {
 
         assert_eq!(expected_2d, Pt::<2>::neighbour_offsets());
 
-        let expected_3d: Vec<Pt<3>> = vec![
+        let expected_3d: HashSet<Pt<3>> = vec![
             [-1, -1, -1],
             [-1, -1, 0],
             [-1, -1, 1],
@@ -87,6 +103,30 @@ mod tests {
         .collect();
 
         assert_eq!(expected_3d, Pt::<3>::neighbour_offsets());
+    }
+
+    #[test]
+    fn validate_card_offsets() {
+        let expected_2d: HashSet<Pt<2>> = vec![[-1, 0], [0, -1], [0, 1], [1, 0]]
+            .into_iter()
+            .map(Pt)
+            .collect();
+
+        assert_eq!(expected_2d, Pt::<2>::card_offsets());
+
+        let expected_3d: HashSet<Pt<3>> = vec![
+            [-1, 0, 0],
+            [0, -1, 0],
+            [0, 0, -1],
+            [0, 0, 1],
+            [0, 1, 0],
+            [1, 0, 0],
+        ]
+        .into_iter()
+        .map(Pt)
+        .collect();
+
+        assert_eq!(expected_3d, Pt::<3>::card_offsets());
     }
 
     #[rstest]

@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use super::point::Pt;
 
@@ -6,23 +6,30 @@ use super::point::Pt;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Grid<T, const DIMS: usize> {
     /// neighbour offsets for points in this N dimensions
-    offsets: Vec<Pt<DIMS>>,
+    offsets: HashSet<Pt<DIMS>>,
+    /// cardinal offsets for points in this N dimensions
+    card_offsets: HashSet<Pt<DIMS>>,
+    default_val: T,
     pub grid: HashMap<Pt<DIMS>, T>,
 }
 
-impl<T, const DIMS: usize> Default for Grid<T, DIMS> {
+impl<T: Default, const DIMS: usize> Default for Grid<T, DIMS> {
     fn default() -> Self {
         Self {
             offsets: Pt::<DIMS>::neighbour_offsets(),
+            card_offsets: Pt::<DIMS>::card_offsets(),
+            default_val: T::default(),
             grid: Default::default(),
         }
     }
 }
 
-impl<T, const DIMS: usize> From<Vec<(Pt<DIMS>, T)>> for Grid<T, DIMS> {
+impl<T: Default, const DIMS: usize> From<Vec<(Pt<DIMS>, T)>> for Grid<T, DIMS> {
     fn from(v: Vec<(Pt<DIMS>, T)>) -> Self {
         Self {
             offsets: Pt::<DIMS>::neighbour_offsets(),
+            card_offsets: Pt::<DIMS>::card_offsets(),
+            default_val: T::default(),
             grid: v.into_iter().collect(),
         }
     }
