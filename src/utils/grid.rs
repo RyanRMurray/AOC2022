@@ -45,14 +45,13 @@ impl<T, const DIMS: usize> Grid<T, DIMS> {
         });
     }
 
-    /// offset the grid in the specified direction
-    fn offset_all(mut self, offset_by: &Pt<DIMS>) -> Self {
+    /// apply a transformation to every point in a grid
+    fn transform(mut self, transformation: fn(&Pt<DIMS>) -> Pt<DIMS>) -> Self {
         let mut new_grid = HashMap::default();
         self.grid.into_iter().for_each(|(k, v)| {
-            new_grid.insert(k.add(offset_by), v);
+            new_grid.insert(transformation(&k), v);
         });
         self.grid = new_grid;
-
         self
     }
 }
@@ -63,7 +62,7 @@ mod tests {
     use crate::utils::point::Pt;
 
     #[test]
-    fn test_offset() {
+    fn test_transform() {
         let expected = Grid::<i32, 2>::from(vec![
             (Pt([50, 50]), 10),
             (Pt([25, 50]), 204),
@@ -76,7 +75,7 @@ mod tests {
             (Pt([-25, -25]), 66),
         ]);
 
-        let result = input.offset_all(&Pt([25, 25]));
+        let result = input.transform(|pt| pt.add(&Pt([25, 25])));
 
         assert_eq!(expected, result);
     }
