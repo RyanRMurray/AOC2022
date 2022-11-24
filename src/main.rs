@@ -1,4 +1,8 @@
-use clap::Parser;
+use std::{fs, path::Path};
+
+use anyhow::{anyhow, Ok, Result};
+use clap::{Parser, ValueEnum};
+use solutions::SOLUTIONS;
 
 use crate::{
     solutions::templates::{
@@ -10,21 +14,78 @@ use crate::{
 pub mod solutions;
 pub mod utils;
 
+#[derive(Debug, Clone, ValueEnum)]
+enum RunMode {
+    Example,
+    Single,
+    All,
+}
+
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
+    #[arg(long, short, default_value = "example")]
+    mode: RunMode,
+    #[arg(long, short, required_if_eq("mode", "single"))]
+    day: Option<usize>,
     #[arg(long, short)]
-    example: bool,
+    input: Option<String>,
 }
 
 fn main() {
     let args = Args::parse();
 
-    if args.example {
-        run_example();
-        return;
+    match args.mode {
+        RunMode::Example => run_example(),
+        RunMode::All => todo!(),
+        RunMode::Single => {
+            let result = run_single(args.day.unwrap(), args.input);
+
+            if let Err(err) = result {
+                println!(
+                    "Failed to run solution for Day {}. Reason: {}",
+                    args.day.unwrap(),
+                    err
+                )
+            }
+        }
     }
-    println!("Hello, world!");
+}
+
+/// Load a puzzle input from a .txt file
+fn load_from_file(file_path: &Path) -> Result<String> {
+    if !file_path.is_file()
+        || file_path.extension().is_none()
+        || file_path.extension().unwrap() != "txt"
+    {
+        return Err(anyhow!(
+            "input path '{:?}' is not valid. Please provide a path to a valid text file.",
+            file_path.to_str()
+        ));
+    }
+
+    match fs::read_to_string(file_path) {
+        Err(error) => Err(anyhow!(
+            "Failed to read file. Reason: {}",
+            error.to_string()
+        )),
+        Result::Ok(text) => Ok(text),
+    }
+}
+
+/// run a single specified day's solution
+fn run_single(day: usize, input_path: Option<String>) -> Result<()> {
+    if day < 1 || day > SOLUTIONS.len() {
+        return Err(anyhow!("Day '{}' is invalid or not yet solved", day));
+    }
+
+    let unwrapped_path = input_path.unwrap_or(format!("./inputs/input_{:02}.txt", day));
+    let file_path = Path::new(&unwrapped_path);
+
+    let input = load_from_file(file_path)?;
+
+    SOLUTIONS[day - 1](&input)?;
+    Ok(())
 }
 
 fn run_example() {
