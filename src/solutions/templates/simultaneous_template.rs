@@ -8,9 +8,9 @@ use itertools::Itertools;
 // part 2: get the number after the first number that's higher than the previous
 
 #[derive(Default)]
-struct ExampleSolution {}
+pub struct ExampleSolutionSimultaneous {}
 
-impl SolutionSimultaneous<Vec<usize>, usize, usize> for ExampleSolution {
+impl SolutionSimultaneous<Vec<usize>, usize, usize> for ExampleSolutionSimultaneous {
     fn load(&self, input: &str) -> anyhow::Result<Vec<usize>> {
         Ok(input
             .replace(['[', ']'], "")
@@ -34,7 +34,7 @@ impl SolutionSimultaneous<Vec<usize>, usize, usize> for ExampleSolution {
 
 #[cfg(test)]
 mod tests {
-    use super::ExampleSolution;
+    use super::ExampleSolutionSimultaneous;
     use crate::utils::solver_types::SolutionSimultaneous;
     use rstest::rstest;
 
@@ -43,7 +43,7 @@ mod tests {
     #[case("[1,2,6,4,100]", 2, 6)]
     #[case("[5,4,3,1,2,7]", 2, 7)]
     fn validate_simul(#[case] input: &str, #[case] expected_1: usize, #[case] expected_2: usize) {
-        let solver = ExampleSolution::default();
+        let solver = ExampleSolutionSimultaneous::default();
 
         let input = solver.load(input).unwrap();
         let (p1, p2) = solver.solve(input).unwrap();

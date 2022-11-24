@@ -1,2 +1,2 @@
-mod linear_template;
-mod simultaneous_template;
+pub mod linear_template;
+pub mod simultaneous_template;

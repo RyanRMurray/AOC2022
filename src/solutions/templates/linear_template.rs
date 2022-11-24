@@ -6,9 +6,9 @@ use anyhow::Result;
 // part 1: sum up these numbers
 // part 2: multiply the result of part 1 by the number of numbers in the input
 #[derive(Default)]
-struct ExampleSolution {}
+pub struct ExampleSolutionLinear {}
 
-impl SolutionLinear<Vec<usize>, usize, usize> for ExampleSolution {
+impl SolutionLinear<Vec<usize>, usize, usize> for ExampleSolutionLinear {
     fn load(&self, input: &str) -> Result<Vec<usize>> {
         Ok(input
             .replace(['[', ']'], "")
@@ -29,7 +29,7 @@ impl SolutionLinear<Vec<usize>, usize, usize> for ExampleSolution {
 
 #[cfg(test)]
 mod tests {
-    use super::ExampleSolution;
+    use super::ExampleSolutionLinear;
     use crate::utils::solver_types::SolutionLinear;
     use rstest::rstest;
 
@@ -38,7 +38,7 @@ mod tests {
     #[case("[0,7,13,20,1,100]", 141, 846)]
     #[case("[6000]", 6000, 6000)]
     fn validate_linear(#[case] input: &str, #[case] expected_1: usize, #[case] expected_2: usize) {
-        let solver = ExampleSolution::default();
+        let solver = ExampleSolutionLinear::default();
 
         let input = solver.load(input).unwrap();
         let p1 = solver.part1(&input).unwrap();
