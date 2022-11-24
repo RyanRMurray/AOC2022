@@ -28,3 +28,25 @@ pip install pre-commit
 pre-commit install
 ```
 This will run a number of linting actions and tests before you can commit.
+
+## Utils
+
+### Pt
+An point with an arbitrary number of dimensions. AoC frequently features both 2D and 2D spaces that need to be simulated. Occasionally, there's a curveball in the form of a 4D space.
+These points assume that the spaces we need to represent are discrete - which is a safe bet since floating point operations in AoC are super rare.
+
+Currently implements:
+ - addition, multiplication, magnitude
+ - Associated functions that return the offsets required to reach a point's neighbours:
+   - `card_offsets` returns all cardinal (non-diagonal) offsets
+   - 'neighbour_offsets` returns all offsets
+
+### Grid
+A grid with an arbitrary number of dimensions - using the above `Pt` as a key in a Hashmap of arbitrary items. Includes some helpful features:
+ - Stores copies of `Pt`'s neighbour offsets so we don't have to recalculate them each time.
+ - Generator functions using a vector of `Pt`-value pairs, or default values
+ - Default value that is returned if a point does not exist in a grid - helpful when we want to represent infinite space
+ - `merge` for combining `Grid`s
+ - `transform` for applying a transformation to all `Pt`s in a `Grid` (e.g. translation, multiplication, and God forbid, rotation.)
+ - `bounds` for getting the minimum and maximum coordinate in each dimension
+ - `print_2d` that creates a string representation of a 2D grid. Only 2D for now.
