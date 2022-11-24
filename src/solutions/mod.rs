@@ -1,1 +1,1 @@
-mod day_template;
+mod templates;
