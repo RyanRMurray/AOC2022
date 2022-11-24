@@ -1,10 +1,11 @@
 use std::collections::{HashMap, HashSet};
+use std::fmt::Debug;
 
 use super::point::Pt;
 
 #[allow(dead_code)]
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Grid<T, const DIMS: usize> {
+pub struct Grid<T: Copy, const DIMS: usize> {
     /// neighbour offsets for points in this N dimensions
     offsets: HashSet<Pt<DIMS>>,
     /// cardinal offsets for points in this N dimensions
@@ -13,7 +14,7 @@ pub struct Grid<T, const DIMS: usize> {
     pub grid: HashMap<Pt<DIMS>, T>,
 }
 
-impl<T: Default, const DIMS: usize> Default for Grid<T, DIMS> {
+impl<T: Default + Copy, const DIMS: usize> Default for Grid<T, DIMS> {
     fn default() -> Self {
         Self {
             offsets: Pt::<DIMS>::neighbour_offsets(),
@@ -24,7 +25,7 @@ impl<T: Default, const DIMS: usize> Default for Grid<T, DIMS> {
     }
 }
 
-impl<T: Default, const DIMS: usize> From<Vec<(Pt<DIMS>, T)>> for Grid<T, DIMS> {
+impl<T: Default + Copy, const DIMS: usize> From<Vec<(Pt<DIMS>, T)>> for Grid<T, DIMS> {
     fn from(v: Vec<(Pt<DIMS>, T)>) -> Self {
         Self {
             offsets: Pt::<DIMS>::neighbour_offsets(),
@@ -36,9 +37,14 @@ impl<T: Default, const DIMS: usize> From<Vec<(Pt<DIMS>, T)>> for Grid<T, DIMS> {
 }
 
 #[allow(dead_code)]
-impl<T, const DIMS: usize> Grid<T, DIMS> {
+impl<T: Copy, const DIMS: usize> Grid<T, DIMS> {
+    /// get a value at the specified coordinates or the default
+    pub fn get_def(&self, pt: &Pt<DIMS>) -> T {
+        *self.grid.get(pt).unwrap_or(&self.default_val)
+    }
+
     /// merge one grid into this one, using the specified merge_function
-    fn merge(&mut self, other: Grid<T, DIMS>, merge_function: fn(&T, &T) -> T) {
+    pub fn merge(&mut self, other: Grid<T, DIMS>, merge_function: fn(&T, &T) -> T) {
         other.grid.into_iter().for_each(|(k, v)| {
             let new_val = merge_function(self.grid.get(&k).unwrap_or(&self.default_val), &v);
             self.grid.insert(k, new_val);
@@ -46,13 +52,45 @@ impl<T, const DIMS: usize> Grid<T, DIMS> {
     }
 
     /// apply a transformation to every point in a grid
-    fn transform(mut self, transformation: fn(&Pt<DIMS>) -> Pt<DIMS>) -> Self {
+    pub fn transform(mut self, transformation: fn(&Pt<DIMS>) -> Pt<DIMS>) -> Self {
         let mut new_grid = HashMap::default();
         self.grid.into_iter().for_each(|(k, v)| {
             new_grid.insert(transformation(&k), v);
         });
         self.grid = new_grid;
         self
+    }
+
+    /// get the min and max values of each dimension
+    pub fn bounds(&self) -> ([isize; DIMS], [isize; DIMS]) {
+        let mut mins = [0; DIMS];
+        let mut maxs = [0; DIMS];
+
+        for k in self.grid.keys() {
+            for i in 0..DIMS {
+                mins[i] = isize::min(mins[i], k.0[i]);
+                maxs[i] = isize::max(maxs[i], k.0[i]);
+            }
+        }
+        (mins, maxs)
+    }
+}
+
+impl<T: Copy> Grid<T, 2> {
+    /// print a 2d grid using a given function for representing points
+    pub fn print(&self, to_printable: fn(T) -> char) -> String {
+        let mut res = String::from("\n");
+
+        let ([min_x, min_y], [max_x, max_y]) = self.bounds();
+
+        for y in min_y..max_y + 1 {
+            for x in min_x..max_x + 1 {
+                res.push(to_printable(self.get_def(&Pt([x, y]))));
+            }
+            res.push('\n');
+        }
+
+        res
     }
 }
 
@@ -94,5 +132,31 @@ mod tests {
         target.merge(to_merge, |_, x| *x);
 
         assert_eq!(expected, target);
+    }
+
+    #[test]
+    fn test_print() {
+        let expected = r#"
+123
+456
+789
+"#
+        .to_string();
+
+        let grid = Grid::<u32, 2>::from(vec![
+            (Pt([0, 0]), 1),
+            (Pt([1, 0]), 2),
+            (Pt([2, 0]), 3),
+            (Pt([0, 1]), 4),
+            (Pt([1, 1]), 5),
+            (Pt([2, 1]), 6),
+            (Pt([0, 2]), 7),
+            (Pt([1, 2]), 8),
+            (Pt([2, 2]), 9),
+        ]);
+
+        let result = grid.print(|x| char::from_digit(x, 10).unwrap());
+
+        assert_eq!(expected, result);
     }
 }
