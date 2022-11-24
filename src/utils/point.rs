@@ -1,15 +1,17 @@
 use itertools::Itertools;
-use std::collections::HashMap;
 
-#[allow(dead_code)]
-#[derive(Default)]
-struct Grid<T, const DIMS: usize> {
-    pub grid: HashMap<[isize; DIMS], T>,
+#[derive(Hash, PartialEq, Eq, PartialOrd, Debug)]
+pub struct Pt<const DIMS: usize>([isize; DIMS]);
+
+impl<const DIMS: usize> Default for Pt<DIMS> {
+    fn default() -> Self {
+        Self([0; DIMS])
+    }
 }
 
 #[allow(dead_code)]
-impl<T, const DIMS: usize> Grid<T, DIMS> {
-    /// get all the offsets required to get every neighbour to a position in the grid
+impl<const DIMS: usize> Pt<DIMS> {
+    /// get all the offsets required to get every neighbour to a position
     fn neighbour_offsets(&self) -> Vec<[isize; DIMS]> {
         vec![[-1, 0, 1]; DIMS]
             .into_iter()
@@ -18,15 +20,24 @@ impl<T, const DIMS: usize> Grid<T, DIMS> {
             .filter(|arr| arr != &[0; DIMS])
             .collect_vec()
     }
+
+    fn add(&self, oth: Pt<DIMS>) -> Self {
+        let mut res = [0; DIMS];
+        for (i, (a, b)) in self.0.iter().zip(oth.0).enumerate() {
+            res[i] = a + b;
+        }
+        Pt(res)
+    }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::Grid;
+    use super::Pt;
+    use rstest::rstest;
 
     #[test]
     fn validate_offsets() {
-        let g2: Grid<usize, 2> = Grid::default();
+        let g2: Pt<2> = Pt::default();
 
         let expected = vec![
             [-1, -1],
@@ -40,7 +51,7 @@ mod tests {
         ];
 
         assert_eq!(expected, g2.neighbour_offsets());
-        let g3: Grid<usize, 3> = Grid::default();
+        let g3: Pt<3> = Pt::default();
 
         let expected = vec![
             [-1, -1, -1],
@@ -72,5 +83,12 @@ mod tests {
         ];
 
         assert_eq!(expected, g3.neighbour_offsets());
+    }
+
+    #[rstest]
+    #[case(Pt([1,2,3,4]), Pt([1,2,0,0]), Pt([0,0,3,4]))]
+    #[case(Pt([-102,34,0,-3]), Pt([100,14,-10000,999]), Pt([-202,20,10000,-1002]))]
+    fn validate_add(#[case] expected: Pt<4>, #[case] a: Pt<4>, #[case] b: Pt<4>) {
+        assert_eq!(expected, a.add(b))
     }
 }
