@@ -5,6 +5,7 @@ use super::point::Pt;
 #[allow(dead_code)]
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Grid<T, const DIMS: usize> {
+    /// neighbour offsets for points in this N dimensions
     offsets: Vec<Pt<DIMS>>,
     pub grid: HashMap<Pt<DIMS>, T>,
 }
@@ -70,5 +71,21 @@ mod tests {
         let result = input.offset_all(&Pt([25, 25]));
 
         assert_eq!(expected, result);
+    }
+
+    #[test]
+    fn test_merge() {
+        let mut target = Grid::<i32, 2>::from(vec![(Pt([50, 50]), 10), (Pt([25, 50]), 204)]);
+        let to_merge = Grid::<i32, 2>::from(vec![(Pt([25, 50]), 5000), (Pt([0, 0]), 60)]);
+
+        let expected = Grid::<i32, 2>::from(vec![
+            (Pt([50, 50]), 10),
+            (Pt([25, 50]), 5000),
+            (Pt([0, 0]), 60),
+        ]);
+
+        target.merge(to_merge);
+
+        assert_eq!(expected, target);
     }
 }
