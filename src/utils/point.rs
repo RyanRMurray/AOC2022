@@ -12,16 +12,17 @@ impl<const DIMS: usize> Default for Pt<DIMS> {
 #[allow(dead_code)]
 impl<const DIMS: usize> Pt<DIMS> {
     /// get all the offsets required to get every neighbour to a position
-    fn neighbour_offsets(&self) -> Vec<[isize; DIMS]> {
+    pub fn neighbour_offsets() -> Vec<Pt<DIMS>> {
         vec![[-1, 0, 1]; DIMS]
             .into_iter()
             .multi_cartesian_product()
             .map(|vec| vec.try_into().unwrap())
             .filter(|arr| arr != &[0; DIMS])
+            .map(Pt)
             .collect_vec()
     }
 
-    fn add(&self, oth: Pt<DIMS>) -> Self {
+    pub fn add(&self, oth: Pt<DIMS>) -> Self {
         let mut res = [0; DIMS];
         for (i, (a, b)) in self.0.iter().zip(oth.0).enumerate() {
             res[i] = a + b;
@@ -37,9 +38,7 @@ mod tests {
 
     #[test]
     fn validate_offsets() {
-        let g2: Pt<2> = Pt::default();
-
-        let expected = vec![
+        let expected_2d: Vec<Pt<2>> = vec![
             [-1, -1],
             [-1, 0],
             [-1, 1],
@@ -48,12 +47,14 @@ mod tests {
             [1, -1],
             [1, 0],
             [1, 1],
-        ];
+        ]
+        .into_iter()
+        .map(Pt)
+        .collect();
 
-        assert_eq!(expected, g2.neighbour_offsets());
-        let g3: Pt<3> = Pt::default();
+        assert_eq!(expected_2d, Pt::<2>::neighbour_offsets());
 
-        let expected = vec![
+        let expected_3d: Vec<Pt<3>> = vec![
             [-1, -1, -1],
             [-1, -1, 0],
             [-1, -1, 1],
@@ -80,9 +81,12 @@ mod tests {
             [1, 1, -1],
             [1, 1, 0],
             [1, 1, 1],
-        ];
+        ]
+        .into_iter()
+        .map(Pt)
+        .collect();
 
-        assert_eq!(expected, g3.neighbour_offsets());
+        assert_eq!(expected_3d, Pt::<3>::neighbour_offsets());
     }
 
     #[rstest]
