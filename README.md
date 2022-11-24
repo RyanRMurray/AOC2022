@@ -31,6 +31,17 @@ pre-commit install
 ```
 This will run a number of linting actions and tests before you can commit.
 
+### Creating a new solution
+ 1. Create a new file named `./src/solutions/day{day}.rs` .
+ 2. Copy, paste, and rename one of the template files in `./src/solutions/templates`.
+ 3. Create a function that applies a solution to the input, like this:
+```rust
+pub fn day{day}(input: &str) -> Result<f32> {
+    solve_linear(input, &Day{day}Solution::default())
+}
+```
+ 4. Add this function to `SOLUTIONS` in `./src/solutions/mod.rs.
+
 ## Utils
 
 ### Pt
