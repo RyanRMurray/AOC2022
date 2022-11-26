@@ -71,10 +71,10 @@ impl<T: Copy, const DIMS: usize> Grid<T, DIMS> {
     }
 
     /// apply a transformation to every point in a grid
-    pub fn transform(mut self, transformation: fn(&Pt<DIMS>) -> Pt<DIMS>) -> Self {
+    pub fn transform(mut self, transformation: fn(Pt<DIMS>) -> Pt<DIMS>) -> Self {
         let mut new_grid = HashMap::default();
         self.grid.into_iter().for_each(|(k, v)| {
-            new_grid.insert(transformation(&k), v);
+            new_grid.insert(transformation(k), v);
         });
         self.grid = new_grid;
         self
@@ -132,7 +132,7 @@ mod tests {
             (Pt([-25, -25]), 66),
         ]);
 
-        let result = input.transform(|pt| pt.add(&Pt([25, 25])));
+        let result = input.transform(|pt| pt + Pt([25, 25]));
 
         assert_eq!(expected, result);
     }
