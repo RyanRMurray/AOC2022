@@ -42,7 +42,7 @@ pub fn solve_linear<S: SolutionLinear<I, S1, S2>, I, S1: Debug, S2: Debug>(
 
     let solved_in = input_loaded + p1_end + p2_end;
 
-    println!("Overall time:\t{}ms", solved_in);
+    println!("Overall time:\t\t{}ms", solved_in);
 
     Ok(solved_in)
 }
@@ -63,23 +63,24 @@ pub fn solve_simultaneous<S: SolutionSimultaneous<I, S1, S2>, I, S1: Debug, S2: 
 
     let input = S::load(input)?;
 
-    println!(
-        "Parsed input in:\t{}ms",
-        start.elapsed().as_secs_f32() * 1000.0
-    );
+    let input_loaded = start.elapsed().as_secs_f32() * 1000.0;
 
-    let loaded = Instant::now();
+    println!("Parsed input in:\t{}ms", input_loaded);
+
+    let start_solving = Instant::now();
 
     let (p1, p2) = S::solve(input)?;
+
+    let solved = start_solving.elapsed().as_secs_f32() * 1000.0;
 
     println!("Part 1 Solution: \t{:?}", p1);
     println!("Part 2 Solution: \t{:?}", p2);
 
-    println!("Solved in:\t{}ms", loaded.elapsed().as_secs_f32() * 1000.0);
+    println!("Solved in:\t\t{}ms", solved);
 
-    let solved_in = start.elapsed().as_secs_f32() * 1000.0;
+    let solved_in = input_loaded + solved;
 
-    println!("Overall time:\t{}ms", solved_in);
+    println!("Overall time:\t\t{}ms", solved_in);
 
     Ok(solved_in)
 }

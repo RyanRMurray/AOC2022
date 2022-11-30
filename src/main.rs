@@ -132,5 +132,5 @@ part 2: get the number after the first number that's higher than the previous
     let solved_in_2 =
         solve_simultaneous::<ExampleSolutionSimultaneous, _, _, _>("[6,5,4,2,3,5,8]").unwrap();
 
-    println!("Overall time: {}ms", solved_in_1 + solved_in_2);
+    println!("Example time:\t\t{}ms", solved_in_1 + solved_in_2);
 }
