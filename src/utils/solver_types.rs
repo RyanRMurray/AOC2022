@@ -4,20 +4,19 @@ use std::{fmt::Debug, time::Instant};
 ////////////// SOLUTION LINEAR
 /// When a day has two parts that must be solved sequentially
 pub trait SolutionLinear<I, S1: Debug, S2: Debug> {
-    fn load(&self, input: &str) -> Result<I>;
-    fn part1(&self, input: &I) -> Result<S1>;
-    fn part2(&self, input: &I, part_1_solution: S1) -> Result<S2>;
+    fn load(input: &str) -> Result<I>;
+    fn part1(input: &mut I) -> Result<S1>;
+    fn part2(input: &mut I, part_1_solution: S1) -> Result<S2>;
 }
 
 /// Solve a day where part 2 depends on the output of part 1.
 /// Returns the total time elapsed in milliseconds
-pub fn solve_linear<I, S1: Debug, S2: Debug>(
+pub fn solve_linear<I, S1: Debug, S2: Debug, S: SolutionLinear<I, S1, S2>>(
     input: &str,
-    solution: &impl SolutionLinear<I, S1, S2>,
 ) -> Result<f32> {
     let start = Instant::now();
 
-    let input = solution.load(input)?;
+    let mut input = S::load(input)?;
 
     let input_loaded = start.elapsed().as_secs_f32() * 1000.0;
 
@@ -25,7 +24,7 @@ pub fn solve_linear<I, S1: Debug, S2: Debug>(
 
     let p1_start = Instant::now();
 
-    let p1 = solution.part1(&input)?;
+    let p1 = S::part1(&mut input)?;
 
     let p1_end = p1_start.elapsed().as_secs_f32() * 1000.0;
 
@@ -34,7 +33,7 @@ pub fn solve_linear<I, S1: Debug, S2: Debug>(
 
     let p2_start = Instant::now();
 
-    let p2 = solution.part2(&input, p1)?;
+    let p2 = S::part2(&mut input, p1)?;
 
     let p2_end = p2_start.elapsed().as_secs_f32() * 1000.0;
 

@@ -118,7 +118,7 @@ part 2: multiply the result of part 1 by the number of numbers in the input
 "
     );
 
-    let solved_in_1 = solve_linear("[1,2,3,4,5]", &ExampleSolutionLinear::default()).unwrap();
+    let solved_in_1 = solve_linear::<_, _, _, ExampleSolutionLinear>("[1,2,3,4,5]").unwrap();
 
     println!("\nHere's an example of a simultaneous solution:");
     print!(
