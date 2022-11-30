@@ -118,7 +118,7 @@ part 2: multiply the result of part 1 by the number of numbers in the input
 "
     );
 
-    let solved_in_1 = solve_linear::<_, _, _, ExampleSolutionLinear>("[1,2,3,4,5]").unwrap();
+    let solved_in_1 = solve_linear::<ExampleSolutionLinear, _, _, _>("[1,2,3,4,5]").unwrap();
 
     println!("\nHere's an example of a simultaneous solution:");
     print!(
@@ -130,7 +130,7 @@ part 2: get the number after the first number that's higher than the previous
     );
 
     let solved_in_2 =
-        solve_simultaneous("[6,5,4,2,3,5,8]", &ExampleSolutionSimultaneous::default()).unwrap();
+        solve_simultaneous::<ExampleSolutionSimultaneous, _, _, _>("[6,5,4,2,3,5,8]").unwrap();
 
     println!("Overall time: {}ms", solved_in_1 + solved_in_2);
 }

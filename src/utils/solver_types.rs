@@ -11,7 +11,7 @@ pub trait SolutionLinear<I, S1: Debug, S2: Debug> {
 
 /// Solve a day where part 2 depends on the output of part 1.
 /// Returns the total time elapsed in milliseconds
-pub fn solve_linear<I, S1: Debug, S2: Debug, S: SolutionLinear<I, S1, S2>>(
+pub fn solve_linear<S: SolutionLinear<I, S1, S2>, I, S1: Debug, S2: Debug>(
     input: &str,
 ) -> Result<f32> {
     let start = Instant::now();
@@ -50,19 +50,18 @@ pub fn solve_linear<I, S1: Debug, S2: Debug, S: SolutionLinear<I, S1, S2>>(
 ////////////// SOLUTION SIMULTANEOUS
 /// When a day has two parts that can be solved simultaneously
 pub trait SolutionSimultaneous<I, S1: Debug, S2: Debug> {
-    fn load(&self, input: &str) -> Result<I>;
-    fn solve(&self, input: I) -> Result<(S1, S2)>;
+    fn load(input: &str) -> Result<I>;
+    fn solve(input: I) -> Result<(S1, S2)>;
 }
 
 /// Solve a day where part 1 and part 2 can be solved simultaneously
 /// Returns the total time elapsed in milliseconds
-pub fn solve_simultaneous<I, S1: Debug, S2: Debug>(
+pub fn solve_simultaneous<S: SolutionSimultaneous<I, S1, S2>, I, S1: Debug, S2: Debug>(
     input: &str,
-    solution: &impl SolutionSimultaneous<I, S1, S2>,
 ) -> Result<f32> {
     let start = Instant::now();
 
-    let input = solution.load(input)?;
+    let input = S::load(input)?;
 
     println!(
         "Parsed input in:\t{}ms",
@@ -71,7 +70,7 @@ pub fn solve_simultaneous<I, S1: Debug, S2: Debug>(
 
     let loaded = Instant::now();
 
-    let (p1, p2) = solution.solve(input)?;
+    let (p1, p2) = S::solve(input)?;
 
     println!("Part 1 Solution: \t{:?}", p1);
     println!("Part 2 Solution: \t{:?}", p2);

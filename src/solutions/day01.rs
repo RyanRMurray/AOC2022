@@ -2,11 +2,10 @@ use crate::utils::solver_types::{solve_linear, SolutionLinear};
 use anyhow::{anyhow, Result};
 
 /// Not yet implementd
-#[derive(Default)]
 pub struct Day1Solution {}
 
 pub fn day01(input: &str) -> Result<f32> {
-    solve_linear::<_, _, _, Day1Solution>(input)
+    solve_linear::<Day1Solution, _, _, _>(input)
 }
 
 impl SolutionLinear<String, String, String> for Day1Solution {

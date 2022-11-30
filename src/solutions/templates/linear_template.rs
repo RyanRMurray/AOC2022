@@ -5,7 +5,6 @@ use anyhow::Result;
 // input: [1,2,3,4,5]
 // part 1: sum up these numbers
 // part 2: multiply the result of part 1 by the number of numbers in the input
-#[derive(Default)]
 pub struct ExampleSolutionLinear {}
 
 impl SolutionLinear<Vec<usize>, usize, usize> for ExampleSolutionLinear {

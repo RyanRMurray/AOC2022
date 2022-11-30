@@ -11,7 +11,7 @@ use itertools::Itertools;
 pub struct ExampleSolutionSimultaneous {}
 
 impl SolutionSimultaneous<Vec<usize>, usize, usize> for ExampleSolutionSimultaneous {
-    fn load(&self, input: &str) -> anyhow::Result<Vec<usize>> {
+    fn load(input: &str) -> anyhow::Result<Vec<usize>> {
         Ok(input
             .replace(['[', ']'], "")
             .split(',')
@@ -20,7 +20,7 @@ impl SolutionSimultaneous<Vec<usize>, usize, usize> for ExampleSolutionSimultane
             .collect())
     }
 
-    fn solve(&self, input: Vec<usize>) -> anyhow::Result<(usize, usize)> {
+    fn solve(input: Vec<usize>) -> anyhow::Result<(usize, usize)> {
         let mut prev: usize = usize::MAX;
         for (x, y) in input.iter().tuple_windows() {
             if x > &prev {
@@ -43,10 +43,8 @@ mod tests {
     #[case("[1,2,6,4,100]", 2, 6)]
     #[case("[5,4,3,1,2,7]", 2, 7)]
     fn validate_simul(#[case] input: &str, #[case] expected_1: usize, #[case] expected_2: usize) {
-        let solver = ExampleSolutionSimultaneous::default();
-
-        let input = solver.load(input).unwrap();
-        let (p1, p2) = solver.solve(input).unwrap();
+        let input = ExampleSolutionSimultaneous::load(input).unwrap();
+        let (p1, p2) = ExampleSolutionSimultaneous::solve(input).unwrap();
 
         assert_eq!(expected_1, p1);
         assert_eq!(expected_2, p2);
