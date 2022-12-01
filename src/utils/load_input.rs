@@ -17,6 +17,23 @@ pub fn load_2d_grid<T: Copy + Default>(input: &str, to_value: fn(char) -> T) -> 
     Grid::from(pairs)
 }
 
+/// load values from an \n-seperated list
+pub fn load_lines<T>(input: &str, to_value: fn(&str) -> T) -> Vec<T> {
+    input.lines().map(to_value).collect()
+}
+
+/// load values from a list of \n-seperated list
+pub fn load_segmented_lines<T>(
+    input: &str,
+    split_on: &str,
+    to_value: fn(&str) -> T,
+) -> Vec<Vec<T>> {
+    input
+        .split(split_on)
+        .map(|seg| load_lines(seg, to_value))
+        .collect()
+}
+
 #[cfg(test)]
 mod tests {
     use crate::utils::{grid::Grid, load_input::load_2d_grid, point::Pt};
