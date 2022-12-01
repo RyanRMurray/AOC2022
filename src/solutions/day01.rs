@@ -2,7 +2,6 @@ use crate::utils::solver_types::{solve_simultaneous, SolutionSimultaneous};
 use anyhow::Result;
 use itertools::Itertools;
 
-/// Not yet implementd
 pub struct Day1Solution {}
 
 pub fn day01(input: &str) -> Result<f32> {

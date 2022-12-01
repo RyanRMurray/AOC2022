@@ -1,4 +1,5 @@
 mod day01;
+mod day02;
 pub mod templates;
 
 use anyhow::Result;
