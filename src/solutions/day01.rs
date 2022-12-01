@@ -1,4 +1,7 @@
-use crate::utils::solver_types::{solve_simultaneous, SolutionSimultaneous};
+use crate::utils::{
+    load_input::load_segmented_lines,
+    solver_types::{solve_simultaneous, SolutionSimultaneous},
+};
 use anyhow::Result;
 use itertools::Itertools;
 
@@ -10,10 +13,7 @@ pub fn day01(input: &str) -> Result<f32> {
 
 impl SolutionSimultaneous<Vec<Vec<u32>>, u32, u32> for Day1Solution {
     fn load(input: &str) -> Result<Vec<Vec<u32>>> {
-        Ok(input
-            .split("\n\n")
-            .map(|chunk| chunk.lines().map(|l| l.parse().unwrap()).collect())
-            .collect())
+        Ok(load_segmented_lines(input, "\n\n", |x| x.parse().unwrap()))
     }
 
     fn solve(input: Vec<Vec<u32>>) -> Result<(u32, u32)> {
