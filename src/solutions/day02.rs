@@ -1,4 +1,4 @@
-use crate::utils::solver_types::{solve_linear, SolutionLinear};
+use crate::utils::solver_types::{solve_simultaneous, SolutionSimultaneous};
 use anyhow::Result;
 
 //not yet implemented
@@ -53,7 +53,7 @@ fn game2((them, strat): &(RPS, RPS)) -> usize {
     }
 }
 
-impl SolutionLinear<Vec<(RPS, RPS)>, usize, usize> for Day2Solution {
+impl SolutionSimultaneous<Vec<(RPS, RPS)>, usize, usize> for Day2Solution {
     fn load(input: &str) -> Result<Vec<(RPS, RPS)>> {
         Ok(input
             .lines()
@@ -76,23 +76,21 @@ impl SolutionLinear<Vec<(RPS, RPS)>, usize, usize> for Day2Solution {
             .collect())
     }
 
-    fn part1(input: &mut Vec<(RPS, RPS)>) -> Result<usize> {
-        Ok(input.iter().map(game).sum())
-    }
-
-    fn part2(input: &mut Vec<(RPS, RPS)>, _part_1_solution: usize) -> Result<usize> {
-        Ok(input.iter().map(game2).sum())
+    fn solve(input: Vec<(RPS, RPS)>) -> Result<(usize, usize)> {
+        Ok(input.iter().fold((0, 0), |(p1, p2), strat| {
+            (p1 + game(strat), p2 + game2(strat))
+        }))
     }
 }
 
 pub fn day02(input: &str) -> Result<f32> {
-    solve_linear::<Day2Solution, _, _, _>(input)
+    solve_simultaneous::<Day2Solution, _, _, _>(input)
 }
 
 #[cfg(test)]
 mod tests {
     use super::Day2Solution;
-    use crate::utils::solver_types::SolutionLinear;
+    use crate::utils::solver_types::SolutionSimultaneous;
 
     #[test]
     fn test_answer() {
@@ -104,9 +102,8 @@ C Z"#;
         let p1_expected = 15;
         let p2_expected = 12;
 
-        let mut loaded = Day2Solution::load(input).unwrap();
-        let p1 = Day2Solution::part1(&mut loaded).unwrap();
-        let p2 = Day2Solution::part2(&mut loaded, p1).unwrap();
+        let loaded = Day2Solution::load(input).unwrap();
+        let (p1, p2) = Day2Solution::solve(loaded).unwrap();
 
         assert_eq!(p1_expected, p1);
         assert_eq!(p2_expected, p2);
