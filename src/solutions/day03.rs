@@ -60,16 +60,13 @@ impl SolutionLinear<Vec<Sack>, u32, u32> for Day3Solution {
 
     fn part2(input: &mut Vec<Sack>, _part_1_solution: u32) -> Result<u32> {
         Ok(input
-            .chunks(3)
-            .map(|ch| {
-                if let [a, b, c] = ch {
-                    a.all
-                        .iter()
-                        .find(|i| c.all.contains(i) && b.all.contains(i))
-                        .unwrap()
-                } else {
-                    unreachable!("Invalid number of sacks. check input.")
-                }
+            .iter()
+            .tuples()
+            .map(|(a, b, c)| {
+                a.all
+                    .iter()
+                    .find(|i| c.all.contains(i) && b.all.contains(i))
+                    .unwrap()
             })
             .map(to_priority)
             .sum())
