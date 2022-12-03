@@ -9,16 +9,23 @@ pub struct Day3Solution {}
 
 #[derive(Debug)]
 struct Sack {
-    l: HashSet<u32>,
-    r: HashSet<u32>,
-    all: HashSet<u32>,
+    l: HashSet<char>,
+    r: HashSet<char>,
+    all: HashSet<char>,
 }
 
 impl Sack {
-    fn new(l: HashSet<u32>, r: HashSet<u32>) -> Self {
+    fn new(l: HashSet<char>, r: HashSet<char>) -> Self {
         let mut all = l.clone();
         all.extend(r.clone());
         Self { l, r, all }
+    }
+}
+
+fn to_priority(c: &char) -> u32 {
+    match c.is_uppercase() {
+        true => *c as u32 - 38,
+        _ => *c as u32 - 96,
     }
 }
 
@@ -27,22 +34,15 @@ impl SolutionLinear<Vec<Sack>, u32, u32> for Day3Solution {
         Ok(input
             .lines()
             .map(|line| {
-                let nums: Vec<u32> = line
-                    .chars()
-                    .map(|c| match c.is_uppercase() {
-                        true => c as u32 - 38,
-                        _ => c as u32 - 96,
-                    })
-                    .collect_vec();
-
+                let cs = line.chars().collect_vec();
                 // populate left and right pockets
                 let mut l = HashSet::new();
                 let mut r = HashSet::new();
-                let mid = nums.len() / 2;
+                let mid = line.len() / 2;
 
                 for i in 0..mid {
-                    l.insert(nums[i]);
-                    r.insert(nums[i + mid]);
+                    l.insert(cs[i]);
+                    r.insert(cs[i + mid]);
                 }
 
                 Sack::new(l, r)
@@ -54,6 +54,7 @@ impl SolutionLinear<Vec<Sack>, u32, u32> for Day3Solution {
         Ok(input
             .iter()
             .map(|s| s.l.intersection(&s.r).next().unwrap())
+            .map(to_priority)
             .sum())
     }
 
@@ -62,12 +63,13 @@ impl SolutionLinear<Vec<Sack>, u32, u32> for Day3Solution {
             .chunks(3)
             .map(|ch| {
                 if let [a, b, c] = ch {
-                    let ab: HashSet<u32> = a.all.intersection(&b.all).copied().collect();
+                    let ab: HashSet<char> = a.all.intersection(&b.all).copied().collect();
 
                     return *ab.intersection(&c.all).next().unwrap();
                 }
                 panic!("Invalid number of sacks. check input.")
             })
+            .map(|ch| to_priority(&ch))
             .sum())
     }
 }
