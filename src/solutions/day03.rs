@@ -63,13 +63,15 @@ impl SolutionLinear<Vec<Sack>, u32, u32> for Day3Solution {
             .chunks(3)
             .map(|ch| {
                 if let [a, b, c] = ch {
-                    let ab: HashSet<char> = a.all.intersection(&b.all).copied().collect();
-
-                    return *ab.intersection(&c.all).next().unwrap();
+                    a.all
+                        .iter()
+                        .find(|i| c.all.contains(i) && b.all.contains(i))
+                        .unwrap()
+                } else {
+                    unreachable!("Invalid number of sacks. check input.")
                 }
-                panic!("Invalid number of sacks. check input.")
             })
-            .map(|ch| to_priority(&ch))
+            .map(to_priority)
             .sum())
     }
 }
