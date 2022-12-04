@@ -100,10 +100,11 @@ fn run_all() -> Result<()> {
     let mut time_total = 0.0;
 
     for i in 0..SOLUTIONS.len() {
+        println!("\nDay {:02}:\n", i + 1);
         time_total += run_single(i + 1, None)?;
     }
 
-    println!("Overall runtime: {}ms", time_total);
+    println!("\nSolved all problems in: {}ms", time_total);
 
     Ok(())
 }
