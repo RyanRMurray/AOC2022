@@ -3,20 +3,9 @@ use crate::utils::{
     solver_types::{solve_linear, SolutionLinear},
 };
 use anyhow::Result;
-use lazy_static::lazy_static;
-use regex::{Captures, Regex};
 
 //not yet implemented
 pub struct Day4Solution {}
-
-lazy_static! {
-    static ref RE: Regex = Regex::new("(.+)-(.+),(.+)-(.+)").unwrap();
-}
-
-/// get nth number from the capture - we assume we are matching correctly
-fn parse_re_int(cap: &Captures, i: usize) -> u32 {
-    cap.get(i).unwrap().as_str().parse().unwrap()
-}
 
 /// create a u128 with 1 bits between the a-th and b-th bits inclusive
 /// we assume a b value no higher than 100
@@ -28,10 +17,13 @@ impl SolutionLinear<Vec<(u128, u128)>, usize, usize> for Day4Solution {
     /// create bitmasks for sectors covered by each elf
     fn load(input: &str) -> Result<Vec<(u128, u128)>> {
         Ok(load_lines(input, |line| {
-            let matches = RE.captures(line).unwrap();
+            let nums = line.split_once(',').unwrap();
+            let (a, b) = nums.0.split_once('-').unwrap();
+            let (x, y) = nums.1.split_once('-').unwrap();
+
             (
-                to_bits(parse_re_int(&matches, 1), parse_re_int(&matches, 2)),
-                to_bits(parse_re_int(&matches, 3), parse_re_int(&matches, 4)),
+                to_bits(a.parse().unwrap(), b.parse().unwrap()),
+                to_bits(x.parse().unwrap(), y.parse().unwrap()),
             )
         }))
     }
