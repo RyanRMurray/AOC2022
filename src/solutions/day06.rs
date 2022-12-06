@@ -7,7 +7,7 @@ pub struct Day6Solution {}
 
 fn first_with_n_unique(input: Vec<char>, n: usize) -> usize {
     for (i, tup) in (0..).zip(input.windows(n)) {
-        if tup.iter().unique().count() == n {
+        if tup.iter().all_unique() {
             return i + n;
         }
     }
