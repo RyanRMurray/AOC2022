@@ -1,5 +1,3 @@
-use std::collections::VecDeque;
-
 use crate::utils::solver_types::{solve_linear, SolutionLinear};
 use anyhow::Result;
 use itertools::Itertools;
@@ -7,36 +5,26 @@ use itertools::Itertools;
 //not yet implemented
 pub struct Day6Solution {}
 
-impl SolutionLinear<VecDeque<char>, usize, usize> for Day6Solution {
-    fn load(input: &str) -> Result<VecDeque<char>> {
+fn first_with_n_unique(input: Vec<char>, n: usize) -> usize {
+    for (i, tup) in (0..).zip(input.windows(n)) {
+        if tup.iter().unique().count() == n {
+            return i + n;
+        }
+    }
+    unreachable!("Check input and try again")
+}
+
+impl SolutionLinear<Vec<char>, usize, usize> for Day6Solution {
+    fn load(input: &str) -> Result<Vec<char>> {
         Ok(input.chars().collect())
     }
 
-    fn part1(input: &mut VecDeque<char>) -> Result<usize> {
-        let mut buffer = input.clone();
-        let rest = buffer.split_off(3);
-
-        for (i, c) in rest.iter().enumerate() {
-            buffer.push_back(*c);
-            if buffer.iter().unique().count() == 4 {
-                return Ok(i + 4); // add four to account for offset
-            }
-            buffer.pop_front();
-        }
-        unreachable!("Check input and try again")
+    fn part1(input: &mut Vec<char>) -> Result<usize> {
+        Ok(first_with_n_unique(input.to_vec(), 4))
     }
 
-    fn part2(input: &mut VecDeque<char>, _part_1_solution: usize) -> Result<usize> {
-        let rest = input.split_off(13);
-
-        for (i, c) in rest.iter().enumerate() {
-            input.push_back(*c);
-            if input.iter().unique().count() == 14 {
-                return Ok(i + 14); // add fourteen to account for offset
-            }
-            input.pop_front();
-        }
-        unreachable!("Check input and try again")
+    fn part2(input: &mut Vec<char>, _part_1_solution: usize) -> Result<usize> {
+        Ok(first_with_n_unique(input.to_vec(), 14))
     }
 }
 
