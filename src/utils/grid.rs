@@ -9,7 +9,7 @@ pub struct Grid<T: Copy, const DIMS: usize> {
     /// neighbour offsets for points in this N dimensions
     offsets: HashSet<Pt<DIMS>>,
     /// cardinal offsets for points in this N dimensions
-    card_offsets: HashSet<Pt<DIMS>>,
+    pub card_offsets: HashSet<Pt<DIMS>>,
     default_val: T,
     pub grid: HashMap<Pt<DIMS>, T>,
 }
