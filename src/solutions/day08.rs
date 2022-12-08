@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use crate::utils::{
     grid::Grid,
     load_input::load_2d_grid,
@@ -12,23 +14,17 @@ pub struct Day8Solution {}
 
 type TreeGr = Grid<u8, 2>;
 
-fn visible_from(
-    grid: &TreeGr,
-    mut visible: Grid<bool, 2>,
-    start: Pt<2>,
-    dir: Pt<2>,
-    steps: isize,
-) -> Grid<bool, 2> {
+fn visible_from(grid: &TreeGr, start: Pt<2>, dir: Pt<2>, steps: isize) -> Vec<Pt<2>> {
     let mut last_highest = grid.get_def(&start);
     let mut pos = start;
-    visible.grid.insert(pos, true);
+    let mut visible = vec![start];
 
     for _ in 0..steps {
         let next_pos = pos + dir;
         let next = grid.get_def(&next_pos);
         if next > last_highest {
             last_highest = next;
-            visible.grid.insert(next_pos, true);
+            visible.push(next_pos);
         }
         pos = next_pos;
     }
@@ -61,19 +57,19 @@ impl SolutionLinear<TreeGr, usize, usize> for Day8Solution {
     fn part1(input: &mut TreeGr) -> Result<usize> {
         let (_, [max_x, max_y]) = input.bounds();
 
-        let mut visible = Grid::default();
+        let mut visible = HashSet::new();
 
         for y in 0..max_y + 1 {
-            visible = visible_from(input, visible, Pt([0, y]), Pt([1, 0]), max_y);
-            visible = visible_from(input, visible, Pt([max_x, y]), Pt([-1, 0]), max_y);
+            visible.extend(visible_from(input, Pt([0, y]), Pt([1, 0]), max_y));
+            visible.extend(visible_from(input, Pt([max_x, y]), Pt([-1, 0]), max_y));
         }
 
         for x in 1..max_x {
-            visible = visible_from(input, visible, Pt([x, 0]), Pt([0, 1]), max_y);
-            visible = visible_from(input, visible, Pt([x, max_y]), Pt([0, -1]), max_y);
+            visible.extend(visible_from(input, Pt([x, 0]), Pt([0, 1]), max_y));
+            visible.extend(visible_from(input, Pt([x, max_y]), Pt([0, -1]), max_y));
         }
 
-        Ok(visible.grid.iter().filter(|(_, t)| **t).count())
+        Ok(visible.len())
     }
 
     fn part2(input: &mut TreeGr, _part_1_solution: usize) -> Result<usize> {
