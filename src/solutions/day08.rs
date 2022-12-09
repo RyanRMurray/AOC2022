@@ -38,7 +38,7 @@ fn get_trees_in_dir(grid: &TreeGr, start: Pt<2>, dir: Pt<2>, steps: isize) -> us
     let mut counter = 0;
 
     for _ in 0..steps {
-        ptr = ptr + dir;
+        ptr += dir;
         let new_tree = grid.get_def(&ptr);
         counter += 1;
         if new_tree >= max {

@@ -1,6 +1,6 @@
 use std::{
     collections::HashSet,
-    ops::{Add, Mul, Neg},
+    ops::{Add, AddAssign, Mul, Neg, Sub},
 };
 
 use itertools::Itertools;
@@ -25,6 +25,29 @@ impl<const DIMS: usize> Neg for Pt<DIMS> {
     }
 }
 
+impl<const DIMS: usize> Sub for Pt<DIMS> {
+    type Output = Pt<DIMS>;
+
+    fn sub(mut self, rhs: Self) -> Self::Output {
+        for (i, a) in &mut self.0.iter_mut().enumerate() {
+            *a -= rhs.0[i]
+        }
+        self
+    }
+}
+
+impl<'a, const DIMS: usize> Sub<&'a Pt<DIMS>> for &Pt<DIMS> {
+    type Output = Pt<DIMS>;
+
+    fn sub(self, rhs: &'a Pt<DIMS>) -> Self::Output {
+        let mut subbed = [0; DIMS];
+        for (i, element) in subbed.iter_mut().enumerate().take(DIMS) {
+            *element = self.0[i] - rhs.0[i];
+        }
+        Pt(subbed)
+    }
+}
+
 impl<const DIMS: usize> Add for Pt<DIMS> {
     type Output = Pt<DIMS>;
 
@@ -33,6 +56,12 @@ impl<const DIMS: usize> Add for Pt<DIMS> {
             *a += rhs.0[i]
         }
         self
+    }
+}
+
+impl<const DIMS: usize> AddAssign for Pt<DIMS> {
+    fn add_assign(&mut self, rhs: Self) {
+        *self = *self + rhs;
     }
 }
 
