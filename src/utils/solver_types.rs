@@ -1,9 +1,9 @@
 use anyhow::Result;
-use std::{fmt::Debug, time::Instant};
+use std::{fmt::Display, time::Instant};
 
 ////////////// SOLUTION LINEAR
 /// When a day has two parts that must be solved sequentially
-pub trait SolutionLinear<I, S1: Debug, S2: Debug> {
+pub trait SolutionLinear<I, S1: Display, S2: Display> {
     fn load(input: &str) -> Result<I>;
     fn part1(input: &mut I) -> Result<S1>;
     fn part2(input: &mut I, part_1_solution: S1) -> Result<S2>;
@@ -11,7 +11,7 @@ pub trait SolutionLinear<I, S1: Debug, S2: Debug> {
 
 /// Solve a day where part 2 depends on the output of part 1.
 /// Returns the total time elapsed in milliseconds
-pub fn solve_linear<S: SolutionLinear<I, S1, S2>, I, S1: Debug, S2: Debug>(
+pub fn solve_linear<S: SolutionLinear<I, S1, S2>, I, S1: Display, S2: Display>(
     input: &str,
 ) -> Result<f32> {
     let start = Instant::now();
@@ -28,7 +28,7 @@ pub fn solve_linear<S: SolutionLinear<I, S1, S2>, I, S1: Debug, S2: Debug>(
 
     let p1_end = p1_start.elapsed().as_secs_f32() * 1000.0;
 
-    println!("Part 1 Solution: \t{:?}", p1);
+    println!("Part 1 Solution: \t{}", p1);
     println!("Part 1 solved in:\t{}ms", p1_end);
 
     let p2_start = Instant::now();
@@ -37,7 +37,7 @@ pub fn solve_linear<S: SolutionLinear<I, S1, S2>, I, S1: Debug, S2: Debug>(
 
     let p2_end = p2_start.elapsed().as_secs_f32() * 1000.0;
 
-    println!("Part 2 Solution: \t{:?}", p2);
+    println!("Part 2 Solution: \t{}", p2);
     println!("Part 2 solved in:\t{}ms", p2_end);
 
     let solved_in = input_loaded + p1_end + p2_end;
@@ -49,14 +49,14 @@ pub fn solve_linear<S: SolutionLinear<I, S1, S2>, I, S1: Debug, S2: Debug>(
 
 ////////////// SOLUTION SIMULTANEOUS
 /// When a day has two parts that can be solved simultaneously
-pub trait SolutionSimultaneous<I, S1: Debug, S2: Debug> {
+pub trait SolutionSimultaneous<I, S1: Display, S2: Display> {
     fn load(input: &str) -> Result<I>;
     fn solve(input: I) -> Result<(S1, S2)>;
 }
 
 /// Solve a day where part 1 and part 2 can be solved simultaneously
 /// Returns the total time elapsed in milliseconds
-pub fn solve_simultaneous<S: SolutionSimultaneous<I, S1, S2>, I, S1: Debug, S2: Debug>(
+pub fn solve_simultaneous<S: SolutionSimultaneous<I, S1, S2>, I, S1: Display, S2: Display>(
     input: &str,
 ) -> Result<f32> {
     let start = Instant::now();
@@ -73,8 +73,8 @@ pub fn solve_simultaneous<S: SolutionSimultaneous<I, S1, S2>, I, S1: Debug, S2: 
 
     let solved = start_solving.elapsed().as_secs_f32() * 1000.0;
 
-    println!("Part 1 Solution: \t{:?}", p1);
-    println!("Part 2 Solution: \t{:?}", p2);
+    println!("Part 1 Solution: \t{}", p1);
+    println!("Part 2 Solution: \t{}", p2);
 
     println!("Solved in:\t\t{}ms", solved);
 
