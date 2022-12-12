@@ -59,6 +59,17 @@ impl<const DIMS: usize> Add for Pt<DIMS> {
     }
 }
 
+impl<'a, const DIMS: usize> Add<&'a Pt<DIMS>> for &Pt<DIMS> {
+    type Output = Pt<DIMS>;
+
+    fn add(self, rhs: &'a Pt<DIMS>) -> Self::Output {
+        let mut added = [0; DIMS];
+        for (i, element) in added.iter_mut().enumerate().take(DIMS) {
+            *element = self.0[i] + rhs.0[i];
+        }
+        Pt(added)
+    }
+}
 impl<const DIMS: usize> AddAssign for Pt<DIMS> {
     fn add_assign(&mut self, rhs: Self) {
         *self = *self + rhs;
