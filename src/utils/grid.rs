@@ -82,8 +82,8 @@ impl<T: Copy, const DIMS: usize> Grid<T, DIMS> {
 
     /// get the min and max values of each dimension
     pub fn bounds(&self) -> ([isize; DIMS], [isize; DIMS]) {
-        let mut mins = [0; DIMS];
-        let mut maxs = [0; DIMS];
+        let mut mins = [isize::MAX; DIMS];
+        let mut maxs = [isize::MIN; DIMS];
 
         for k in self.grid.keys() {
             for i in 0..DIMS {
