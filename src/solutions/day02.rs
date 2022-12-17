@@ -5,23 +5,23 @@ use anyhow::Result;
 pub struct Day2Solution {}
 
 #[derive(Eq, PartialEq)]
-enum RPS {
+enum Rps {
     Rock,     //lose
     Paper,    //draw
     Scissors, //win
 }
 
-fn game((them, us): &(RPS, RPS)) -> usize {
+fn game((them, us): &(Rps, Rps)) -> usize {
     let a = match us {
-        RPS::Rock => 1,
-        RPS::Paper => 2,
-        RPS::Scissors => 3,
+        Rps::Rock => 1,
+        Rps::Paper => 2,
+        Rps::Scissors => 3,
     };
 
     let b = match (them, us) {
-        (RPS::Rock, RPS::Paper) => 6,
-        (RPS::Paper, RPS::Scissors) => 6,
-        (RPS::Scissors, RPS::Rock) => 6,
+        (Rps::Rock, Rps::Paper) => 6,
+        (Rps::Paper, Rps::Scissors) => 6,
+        (Rps::Scissors, Rps::Rock) => 6,
         (a, b) if a == b => 3,
         _ => 0,
     };
@@ -29,46 +29,46 @@ fn game((them, us): &(RPS, RPS)) -> usize {
     a + b
 }
 
-fn game2((them, strat): &(RPS, RPS)) -> usize {
+fn game2((them, strat): &(Rps, Rps)) -> usize {
     match strat {
-        RPS::Rock => match them {
-            RPS::Rock => 3,
-            RPS::Paper => 1,
-            RPS::Scissors => 2,
+        Rps::Rock => match them {
+            Rps::Rock => 3,
+            Rps::Paper => 1,
+            Rps::Scissors => 2,
         },
-        RPS::Paper => {
+        Rps::Paper => {
             3 + match them {
-                RPS::Rock => 1,
-                RPS::Paper => 2,
-                RPS::Scissors => 3,
+                Rps::Rock => 1,
+                Rps::Paper => 2,
+                Rps::Scissors => 3,
             }
         }
-        RPS::Scissors => {
+        Rps::Scissors => {
             6 + match them {
-                RPS::Rock => 2,
-                RPS::Paper => 3,
-                RPS::Scissors => 1,
+                Rps::Rock => 2,
+                Rps::Paper => 3,
+                Rps::Scissors => 1,
             }
         }
     }
 }
 
-impl SolutionSimultaneous<Vec<(RPS, RPS)>, usize, usize> for Day2Solution {
-    fn load(input: &str) -> Result<Vec<(RPS, RPS)>> {
+impl SolutionSimultaneous<Vec<(Rps, Rps)>, usize, usize> for Day2Solution {
+    fn load(input: &str) -> Result<Vec<(Rps, Rps)>> {
         Ok(input
             .lines()
             .map(|l| {
                 (
                     match l.chars().next().unwrap() {
-                        'A' => RPS::Rock,
-                        'B' => RPS::Paper,
-                        'C' => RPS::Scissors,
+                        'A' => Rps::Rock,
+                        'B' => Rps::Paper,
+                        'C' => Rps::Scissors,
                         _ => panic!("invaliid input"),
                     },
                     match l.chars().nth(2).unwrap() {
-                        'X' => RPS::Rock,
-                        'Y' => RPS::Paper,
-                        'Z' => RPS::Scissors,
+                        'X' => Rps::Rock,
+                        'Y' => Rps::Paper,
+                        'Z' => Rps::Scissors,
                         _ => panic!("invaliid input"),
                     },
                 )
@@ -76,7 +76,7 @@ impl SolutionSimultaneous<Vec<(RPS, RPS)>, usize, usize> for Day2Solution {
             .collect())
     }
 
-    fn solve(input: Vec<(RPS, RPS)>) -> Result<(usize, usize)> {
+    fn solve(input: Vec<(Rps, Rps)>) -> Result<(usize, usize)> {
         Ok(input.iter().fold((0, 0), |(p1, p2), strat| {
             (p1 + game(strat), p2 + game2(strat))
         }))
